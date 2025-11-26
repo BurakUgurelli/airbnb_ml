@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+
+# venv
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+data/*.csv
+
+# Models
+models/*
+!models/README.md
+
+# Outputs
+outputs/
+plots/
+figures/
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
