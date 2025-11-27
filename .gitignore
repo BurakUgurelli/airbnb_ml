@@ -15,6 +15,9 @@ data/*.csv
 # Models
 models/*
 
+# cache
+.pytest_cache/
+
 # Outputs
 outputs/
 plots/
