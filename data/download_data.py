@@ -1,38 +1,106 @@
-import kagglehub
+"""
+MODUL: DATA DOWNLOAD (KAGGLE)
+
+Beschreibung:
+    Lädt den Datensatz von Kaggle herunter und verschiebt ihn in den data-Ordner.
+    Dieses Modul ist so strukturiert, dass es importiert werden kann.
+"""
+
 import os
 import shutil
+import sys
+import time
+from pathlib import Path
+import kagglehub
 
-# Absoluter Pfad
-# Ordner der aktuellen Datei (z. B. airbnb_ml/data/)
-current_dir = os.path.dirname(os.path.abspath(__file__))
+# Windows support
+try:
+    import colorama
 
-# Projektordner ist 1 Ebene darüber (airbnb_ml/)
-project_dir = os.path.abspath(os.path.join(current_dir, ".."))
+    colorama.init(autoreset=True)
+except ImportError:
+    pass
 
-# Zielordner "data" im Projekt
-target_dir = os.path.join(project_dir, "data")
-os.makedirs(target_dir, exist_ok=True)
 
-print("Zielordner:", target_dir)
+class C:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    GREY = '\033[90m'
 
-# Kaggle Dataset Name
-dataset = "stevezhenghp/airbnb-price-prediction"
 
-print("Downloading dataset...")
-dataset_path = kagglehub.dataset_download(dataset)
-print("Downloaded to:", dataset_path)
+def print_status(icon, key, value, color=C.ENDC):
+    print(f"  {icon} {C.GREY}{key:<15}{C.ENDC} : {color}{value}{C.ENDC}")
 
-# Dateiname im Kaggle-Dataset
-file_name = "train.csv"
 
-source_file = os.path.join(dataset_path, file_name)
-target_file = os.path.join(target_dir, file_name)
+def block(title):
+    print("\n" + C.BLUE + "╔" + "═" * 60 + "╗" + C.ENDC)
+    print(f"{C.BLUE}║{C.ENDC} {C.BOLD}{title.center(58)}{C.ENDC} {C.BLUE}║{C.ENDC}")
+    print(C.BLUE + "╚" + "═" * 60 + "╝" + C.ENDC)
 
-# Prüfen ob die Datei existiert
-if not os.path.exists(source_file):
-    raise FileNotFoundError(f"'{file_name}' wurde im Kaggle-Dataset nicht gefunden!")
 
-# Datei kopieren
-shutil.copy2(source_file, target_file)
+def subblock(title):
+    print(f"\n{C.YELLOW}➤ {C.BOLD}{title}{C.ENDC}")
+    print(f"{C.GREY}" + "─" * 40 + f"{C.ENDC}")
 
-print(f"'{file_name}' wurde erfolgreich nach '{target_dir}' kopiert.")
+
+# Main
+def main():
+    block("DATA INGESTION PIPELINE")
+    start_time = time.time()
+
+    # 1. Pfade setzen
+    subblock("Verzeichnis Setup")
+
+    # Pfad finden
+    current_dir = Path(__file__).resolve().parent
+    target_dir = current_dir
+
+    # Falls das Skript woanders liegt, hier anpassen:
+    if target_dir.name != "data":
+        target_dir = current_dir.parent / "data"
+
+    target_dir.mkdir(parents=True, exist_ok=True)
+    print_status("📂", "Zielordner", str(target_dir), C.CYAN)
+
+    # 2. Download
+    subblock("Kaggle Download")
+    dataset_name = "stevezhenghp/airbnb-price-prediction"
+    file_name = "train.csv"
+
+    try:
+        print(f"  {C.GREY}Starte Download via kagglehub...{C.ENDC}")
+        dataset_path = kagglehub.dataset_download(dataset_name)
+        print_status("⬇️ ", "Download Pfad", dataset_path)
+    except Exception as e:
+        print(f"{C.RED}❌ Download fehlgeschlagen: {e}{C.ENDC}")
+        return
+
+    # 3. Kopieren
+    subblock("Datei Transfer")
+    source_file = Path(dataset_path) / file_name
+    target_file = target_dir / file_name
+
+    if not source_file.exists():
+        print(f"{C.RED}❌ Datei '{file_name}' nicht im Download gefunden.{C.ENDC}")
+        return
+
+    try:
+        shutil.copy2(source_file, target_file)
+        print_status("✅", "Status", "Kopieren erfolgreich", C.GREEN)
+        print_status("📄", "Datei", str(target_file))
+    except Exception as e:
+        print(f"{C.RED}❌ Fehler beim Kopieren: {e}{C.ENDC}")
+
+    runtime = time.time() - start_time
+    print("\n" + C.BLUE + "═" * 60 + C.ENDC)
+    print(f"{C.GREY}⏱  Fertig in {runtime:.2f}s{C.ENDC}\n")
+
+
+if __name__ == "__main__":
+    main()
