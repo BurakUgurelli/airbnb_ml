@@ -3,7 +3,6 @@ MODUL: DATA DOWNLOAD (KAGGLE)
 
 Beschreibung:
     Lädt den Datensatz von Kaggle herunter und verschiebt ihn in den data-Ordner.
-    Dieses Modul ist so strukturiert, dass es importiert werden kann.
 """
 
 import os
