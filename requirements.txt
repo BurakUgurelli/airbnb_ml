@@ -23,3 +23,6 @@ tqdm==4.67.1
 joblib==1.5.2
 
 pytest
+
+jupyterlab
+ipykernel
