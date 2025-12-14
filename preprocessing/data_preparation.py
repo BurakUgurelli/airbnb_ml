@@ -106,10 +106,12 @@ def load_and_prepare_data(path: Optional[Path] = None) -> Tuple[
     existing_drop = [c for c in drop_cols if c in df.columns]
     df = df.drop(columns=existing_drop)
 
-    # Zielvariable Check
+    # Zielvariable sicherstellen: log_price
+    if "log_price" not in df.columns:
+        if "price" not in df.columns:
+            raise KeyError("Weder 'log_price' noch 'price' im Datensatz vorhanden.")
+        df["log_price"] = np.log(df["price"].astype(float))
     target = "log_price"
-    if target not in df.columns:
-        raise KeyError(f"Zielspalte '{target}' fehlt im Datensatz.")
 
     # Imputation Strategien
     num_cols = ["bathrooms", "bedrooms", "beds", "review_scores_rating"]
@@ -146,6 +148,7 @@ def load_and_prepare_data(path: Optional[Path] = None) -> Tuple[
         if date_col in df.columns:
             df[date_col] = pd.to_datetime(df[date_col], errors="coerce")
 
+    # Timestamp today kann Ergebnisse verändern
     if "last_review" in df.columns:
         df["days_since_last_review"] = (pd.Timestamp("today") - df["last_review"]).dt.days
         df["days_since_last_review"] = df["days_since_last_review"].fillna(df["days_since_last_review"].median())
