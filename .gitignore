@@ -15,6 +15,9 @@ data/*.csv
 # Models
 models/*
 
+results/*
+!results/.gitkeep
+
 # cache
 .pytest_cache/
 
