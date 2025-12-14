@@ -5,7 +5,7 @@ Dieses Projekt trainiert ein Modell zur Vorhersage von Airbnb-Preisen basierend 
 
 # Voraussetzungen
 - Python 3.10+
-- Jupyter Lab (optional, empfohlen)
+- scripts/model_training (optional) oder jupyter Lab (empfohlen)
 
 ### Installation & Start
 
