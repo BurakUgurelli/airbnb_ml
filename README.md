@@ -1,4 +1,4 @@
-# Airbnb Price Prediction
+# Short-Term Rental Price Prediction (Airbnb)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue" alt="Python">
