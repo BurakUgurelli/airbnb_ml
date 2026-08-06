@@ -1,3 +1,5 @@
+<img width="5400" height="1500" alt="comparison_overview" src="https://github.com/user-attachments/assets/cff7835e-7c4e-4d7f-9179-0b409949c7a5" />
+
 # Short-Term Rental Price Prediction (Airbnb)
 
 <p align="center">
